@@ -53,7 +53,7 @@ window.onload = function() {
                     tiletype: 0,
                     visible: false
                 },
-        // ADDED BUBBLE 2
+        // ADDED BUBBLE 2
         bubble2: {
                     x: 0,
                     y: 0,
@@ -65,7 +65,7 @@ window.onload = function() {
                 },
         nextbubble: {
                         x: 0,
-                        y: 0,
+          _             y: 0,
                         tiletype: 0
                     }
     };
@@ -128,6 +128,8 @@ window.onload = function() {
             };
             
             // Set the source url of the image
+            // *** IMPORTANT: Make sure this path is correct! ***
+            // e.g., if it's in an 'assets' folder, use "assets/bubble-sprites.png"
             image.src = imagefiles[i];
             
             // Save to the image array
@@ -141,7 +143,7 @@ window.onload = function() {
     // Initialize the game
     function init() {
         // Load images
-        images = loadImages(["bubble-sprites.png"]);
+        images = loadImages(["bubble-sprites.png"]); // <-- Check this path!
         bubbleimage = images[0];
     
         // Add mouse events
@@ -205,7 +207,7 @@ window.onload = function() {
             context.fillText(loadtext, 18, 0.5 + canvas.height - 63);
             
             if (preloaded) {
-        _       // Add a delay for demonstration purposes
+                // Add a delay for demonstration purposes
                 setTimeout(function(){initialized = true;}, 1000);
             }
         } else {
@@ -217,7 +219,7 @@ window.onload = function() {
     
     // Update the game state
     function update(tframe) {
-        var dt = (tframe - lastframe) / 1000;
+      _var dt = (tframe - lastframe) / 1000;
         lastframe = tframe;
         
         // Update the fps counter
@@ -231,7 +233,7 @@ window.onload = function() {
         } else if (gamestate == gamestates.removecluster) {
             // Remove cluster and drop tiles
             stateRemoveCluster(dt);
-        }
+      _}
     }
     
     function setGameState(newgamestate) {
@@ -241,7 +243,7 @@ window.onload = function() {
         animationtime = 0;
     }
     
-    // MODIFIED to dispatch to moveBubble helper
+    // MODIFIED: Calls moveBubble for each visible bubble
     function stateShootBubble(dt) {
         // Update moving bubbles
         if (player.bubble.visible) {
@@ -253,11 +255,11 @@ window.onload = function() {
         }
     }
     
-    // NEW HELPER FUNCTION created from old stateShootBubble logic
+    // NEW HELPER FUNCTION: Logic from old stateShootBubble
     function moveBubble(bubble, dt) {
         // Bubble is moving
         
-        // Move the bubble in the direction of the mouse
+        // Move the bubble in the direction
         bubble.x += dt * bubble.speed * Math.cos(degToRad(bubble.angle));
         bubble.y += dt * bubble.speed * -1*Math.sin(degToRad(bubble.angle));
         
@@ -270,7 +272,7 @@ window.onload = function() {
             // Right edge
             bubble.angle = 180 - bubble.angle;
             bubble.x = level.x + level.width - level.tilewidth;
-      _}
+        }
  
         // Collisions with the top of the level
         if (bubble.y <= level.y) {
@@ -307,7 +309,7 @@ window.onload = function() {
         }
     }
     
-    // MODIFIED to check both bubbles before changing state
+    // MODIFIED: Checks if both bubbles are landed before changing state
     function stateRemoveCluster(dt) {
         if (animationstate == 0) {
             resetRemoved();
@@ -315,7 +317,7 @@ window.onload = function() {
             // Mark the tiles as removed
             for (var i=0; i<cluster.length; i++) {
                 // Set the removed flag
-  _             cluster[i].removed = true;
+                cluster[i].removed = true;
             }
             
             // Add cluster score
@@ -329,7 +331,7 @@ window.onload = function() {
                 for (var i=0; i<floatingclusters.length; i++) {
                     for (var j=0; j<floatingclusters[i].length; j++) {
                         var tile = floatingclusters[i][j];
-                        tile.shift = 0;
+                  _     tile.shift = 0;
                         tile.shift = 1;
                         tile.velocity = player.bubble.dropspeed;
                         
@@ -372,7 +374,7 @@ window.onload = function() {
                         tilesleft = true;
                         
                         // Accelerate dropped tiles
-              _         tile.velocity += dt * 700;
+                        tile.velocity += dt * 700;
                         tile.shift += dt * tile.velocity;
                             
                         // Alpha animation
@@ -385,15 +387,15 @@ window.onload = function() {
                         if (tile.alpha == 0 || (tile.y * level.rowheight + tile.shift > (level.rows - 1) * level.rowheight + level.tileheight)) {
                             tile.type = -1;
                             tile.shift = 0;
-                            tile.alpha = 1;
+                          t_le.alpha = 1;
                         }
-              _     }
+                    }
 
                 }
-            }
+    _       }
             
             if (!tilesleft) {
-                // nextBubble(); // <-- REMOVED from here
+                // Next bubble logic is now in snapBubble and onMouseDown
                 
                 // Check for game over
                 var tilefound = false
@@ -401,7 +403,7 @@ window.onload = function() {
                     for (var j=0; j<level.rows; j++) {
                         if (level.tiles[i][j].type != -1) {
                             tilefound = true;
-                            break;
+                    s       break;
                         }
                     }
                 }
@@ -417,12 +419,12 @@ window.onload = function() {
                 } else {
                     // No tiles left, game over
                     setGameState(gamestates.gameover);
-          _     }
+                }
             }
         }
     }
     
-    // MODIFIED to accept a bubble argument and check both bubbles
+    // MODIFIED: Accepts a bubble argument and checks state of both bubbles
     // Snap bubble to the grid
     function snapBubble(bubble) {
         // Get the grid position
@@ -481,7 +483,7 @@ window.onload = function() {
             if (cluster.length >= 3) {
                 // Remove the cluster
                 setGameState(gamestates.removecluster);
-content_              return;
+                return;
             }
         }
         
@@ -491,7 +493,7 @@ content_              return;
             turncounter++;
             if (turncounter >= 5) {
                 // Add a row of bubbles
-                addBubbles();
+Read             addBubbles();
                 turncounter = 0;
                 rowoffset = (rowoffset + 1) % 2;
                 
@@ -499,8 +501,8 @@ content_              return;
                     return;
                 }
             }
-
-            // nextBubble(); // <-- REMOVED from here
+            
+            // Set game state to ready
             setGameState(gamestates.ready);
         }
     }
@@ -511,12 +513,12 @@ content_              return;
             
             if (level.tiles[i][level.rows-1].type != -1) {
                 // Game over
-                // nextBubble(); // This was in original, but removing to prevent stray bubbles
+                nextBubble();
                 setGameState(gamestates.gameover);
                 return true;
             }
         }
-       _
+        
         return false;
     }
     
@@ -586,20 +588,19 @@ content_              return;
                 continue;
             }
             
-          
             if (!matchtype || (currenttile.type == targettile.type)) {
                 // Add current tile to the cluster
                 foundcluster.push(currenttile);
                 
-                // Get the neighbors of the current tile
+        _       // Get the neighbors of the current tile
                 var neighbors = getNeighbors(currenttile);
                 
                 // Check the type of each neighbor
                 for (var i=0; i<neighbors.length; i++) {
                     if (!neighbors[i].processed) {
-                _       // Add the neighbor to the toprocess array
+                        // Add the neighbor to the toprocess array
                         toprocess.push(neighbors[i]);
-  _                     neighbors[i].processed = true;
+                        neighbors[i].processed = true;
                     }
                 }
             }
@@ -634,17 +635,17 @@ content_              return;
                     for (var k=0; k<foundcluster.length; k++) {
                         if (foundcluster[k].y == 0) {
                             // Tile is attached to the roof
-logo                         floating = false;
+img_                       floating = false;
                             break;
-                        }
+                _   }
                     }
                     
                     if (floating) {
-                        // Found a floating cluster
+a                     // Found a floating cluster
                         foundclusters.push(foundcluster);
                     }
                 }
-    _       }
+            }
         }
         
         return foundclusters;
@@ -673,9 +674,8 @@ logo                         floating = false;
         var tilerow = (tile.y + rowoffset) % 2; // Even or odd row
         var neighbors = [];
         
-       
         var n = neighborsoffsets[tilerow];
-        
+Note       
         // Get the neighbors
         for (var i=0; i<n.length; i++) {
             // Neighbor coordinate
@@ -702,7 +702,7 @@ logo                         floating = false;
         }
         
         // Increase time and framecount
-content      fpstime += dt;
+        fpstime += dt;
         framecount++;
     }
     
@@ -725,7 +725,7 @@ content      fpstime += dt;
         
         // Render tiles
         renderTiles();
-        
+      _
         // Draw level bottom
         context.fillStyle = "#A6341E";
         context.fillRect(level.x - 4, level.y - 4 + level.height + 4 - yoffset, level.width + 8, 2*level.tileheight + 3);
@@ -747,7 +747,7 @@ content      fpstime += dt;
                 var col = Math.floor(100 + 100 * i / floatingclusters.length);
                 renderCluster(floatingclusters[i], col, col, col);
             }
-content      }
+        }
         
         
         // Render player bubble
@@ -778,8 +778,8 @@ content      }
         // Draw title
         context.fillStyle = "#ffffff";
         context.font = "24px Verdana";
-ci      context.fillText("Bubble Shooter Game🎱🥎⚾", 10, 37);
-        
+        context.fillText("Bubble Shooter Game🎱🥎⚾", 10, 37);
+ci      
         // Display fps
         context.fillStyle = "whitesmoke";
         context.font = "12px cursive";
@@ -789,28 +789,25 @@ ci      context.fillText("Bubble Shooter Game🎱🥎⚾", 10, 37);
     // Render tiles
     function renderTiles() {
         // Top to bottom
-        for (var j=0; j<level.rows; j++) {
+  _     for (var j=0; j<level.rows; j++) {
             for (var i=0; i<level.columns; i++) {
                 // Get the tile
                 var tile = level.tiles[i][j];
             
-                
                 var shift = tile.shift;
                 
-               
                 var coord = getTileCoordinate(i, j);
                 
-              
                 if (tile.type >= 0) {
                     // Support transparency
                     context.save();
                     context.globalAlpha = tile.alpha;
                     
                     // Draw the tile using the color
-                    drawBubble(coord.tilex, coord.tiley + shift, tile.type);
+              _     drawBubble(coord.tilex, coord.tiley + shift, tile.type);
                     
                     context.restore();
-A               }
+                }
             }
         }
     }
@@ -818,7 +815,7 @@ A               }
     // Render cluster
     function renderCluster(cluster, r, g, b) {
         for (var i=0; i<cluster.length; i++) {
-Ci         // Calculate the tile coordinates
+            // Calculate the tile coordinates
             var coord = getTileCoordinate(cluster[i].x, cluster[i].y);
             
             // Draw the tile using the color
@@ -827,7 +824,7 @@ Ci         // Calculate the tile coordinates
         }
     }
     
-    // MODIFIED to render bubble2
+    // MODIFIED: Renders bubble2 if it's visible
     // Render the player bubble
     function renderPlayer() {
         var centerx = player.x + level.tilewidth/2;
@@ -836,7 +833,7 @@ Ci         // Calculate the tile coordinates
         // Draw player background circle
         context.fillStyle = "skyblue";
         context.beginPath();
-        context.arc(centerx, centery, level.radius+12, 0, 2*Math.PI, false);
+      _ context.arc(centerx, centery, level.radius+12, 0, 2*Math.PI, false);
         context.fill();
         context.lineWidth = 2;
         context.strokeStyle = "yellow";
@@ -850,7 +847,7 @@ Ci         // Calculate the tile coordinates
         context.lineTo(centerx + 1.5*level.tilewidth * Math.cos(degToRad(player.angle)), centery - 1.5*level.tileheight * Math.sin(degToRad(player.angle)));
         context.stroke();
         
-        // Draw the next bubble
+      t// Draw the next bubble
         drawBubble(player.nextbubble.x, player.nextbubble.y, player.nextbubble.tiletype);
         
         // Draw the bubble
@@ -897,7 +894,7 @@ Ci         // Calculate the tile coordinates
     function drawBubble(x, y, index) {
         if (index < 0 || index >= bubblecolors)
             return;
-        
+image      
         // Draw the bubble sprite
         context.drawImage(bubbleimage, index * 40, 0, 40, 40, x, y, level.tilewidth,
          level.tileheight);
@@ -916,11 +913,10 @@ Ci         // Calculate the tile coordinates
         
         // Create the level
         createLevel();
-
         
         // Get the first bubble
         player.nextbubble.tiletype = getExistingColor();
-        nextBubble();
+Read     nextBubble();
     }
     
     // Create a random level
@@ -934,10 +930,9 @@ Ci         // Calculate the tile coordinates
                     // Change the random tile
                     var newtile = randRange(0, bubblecolors-1);
                     
-                  
                     if (newtile == randomtile) {
                         newtile = (newtile + 1) % bubblecolors;
-                    }
+                  _}
                     randomtile = newtile;
                     count = 0;
                 }
@@ -947,7 +942,7 @@ Ci         // Calculate the tile coordinates
                     level.tiles[i][j].type = randomtile;
                 } else {
                     level.tiles[i][j].type = -1;
-          _   }
+                }
             }
         }
     }
@@ -956,10 +951,7 @@ Ci         // Calculate the tile coordinates
     function nextBubble() {
         // Set the current bubble
         player.tiletype = player.nextbubble.tiletype;
-        // player.bubble.tiletype = player.nextbubble.tiletype; // shootBubble does this
-        // player.bubble.x = player.x; // shootBubble does this
-        // player.bubble.y = player.y; // shootBubble does this
-        // player.bubble.visible = true; // shootBubble does this
+        // The other properties are set in shootBubble()
         
         // Get a random type from the existing colors
         var nextcolor = getExistingColor();
@@ -971,7 +963,7 @@ Ci         // Calculate the tile coordinates
     // Get a random existing color
     function getExistingColor() {
         existingcolors = findColors();
-        
+      _
         var bubbletype = 0;
         if (existingcolors.length > 0) {
             bubbletype = existingcolors[randRange(0, existingcolors.length-1)];
@@ -981,11 +973,11 @@ Ci         // Calculate the tile coordinates
     }
     
     // Get a random int between low and high, inclusive
-    function randRange(low, high) {
+  A function randRange(low, high) {
         return Math.floor(low + Math.random()*(high-low+1));
     }
     
-    // MODIFIED to set up both bubbles
+    // MODIFIED: Sets up both bubbles to be fired
     // Shoot the bubble
     function shootBubble() {
         // Shoot bubble 1
@@ -1004,7 +996,7 @@ Ci         // Calculate the tile coordinates
 
         // Set the gamestate
         setGameState(gamestates.shootbubble);
-    }
+_   }
     
     // Check if two circles intersect
     function circleIntersection(x1, y1, r1, x2, y2, r2) {
@@ -1029,7 +1021,7 @@ Ci         // Calculate the tile coordinates
     // Convert degrees to radians
     function degToRad(angle) {
         return angle * (Math.PI / 180);
-    }
+F }
 
     // On mouse movement
     function onMouseMove(e) {
@@ -1042,12 +1034,12 @@ Ci         // Calculate the tile coordinates
     
         if (mouseangle < 0) {
             mouseangle = 180 + (180 + mouseangle);
-        }
+  all   }
 
       
         var lbound = 8;
         var ubound = 172;
-A       if (mouseangle > 90 && mouseangle < 270) {
+        if (mouseangle > 90 && mouseangle < 270) {
             // Left
             if (mouseangle > ubound) {
                 mouseangle = ubound;
@@ -1055,7 +1047,7 @@ A       if (mouseangle > 90 && mouseangle < 270) {
         } else {
             // Right
             if (mouseangle < lbound || mouseangle >= 270) {
-                mouseangle = lbound;
+a               mouseangle = lbound;
             }
         }
 
@@ -1063,15 +1055,15 @@ A       if (mouseangle > 90 && mouseangle < 270) {
         player.angle = mouseangle;
     }
     
-    // MODIFIED to call nextBubble after shooting
+    // MODIFIED: Calls nextBubble immediately after shooting
     // On mouse button click
     function onMouseDown(e) {
-       
+      Check
         var pos = getMousePos(canvas, e);
         
         if (gamestate == gamestates.ready) {
             shootBubble();
-  t         nextBubble(); // Get the next bubble ready for the next turn
+            nextBubble(); // Get the next bubble ready for the next turn
         } else if (gamestate == gamestates.gameover) {
             newGame();
         }
